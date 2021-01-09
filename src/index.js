@@ -2,31 +2,49 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
+class TextForm extends Component {
+  render() {
+    const { name, placeholder } = this.props;
+    return <input type="text" id={name} placeholder={placeholder} />;
+  }
+}
+
+class NameForm extends Component {
+  render() {
+    const { form } = this.props;
+    return (
+      <form>
+        <TextForm name="name" placeholder="Full Name" />
+        <TextForm name="name" placeholder="Email" />
+        <input
+          type="tel"
+          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          id="tel"
+          placeholder="Phone number"
+        />
+      </form>
+    );
+  }
+}
+
 class NameArea extends Component {
   render() {
+    const { info } = this.props;
+
     return (
       <div>
         <div className="flex-row">
           <div className="flex-large">
-            <h1>James Donovan</h1>
+            <h1>{info.name}</h1>
             <input type="button" value="Edit" />
           </div>
           <div className="flex-large">
             <h5>
-              jamesdonovan@gmail.com <br />
-              (956) 581 7332
+              {info.email} <br />
+              {info.phone}
             </h5>
 
-            <form>
-              <input type="text" id="name" placeholder="Full Name" />
-              <input type="text" id="name" placeholder="Email" />
-              <input
-                type="tel"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                id="tel"
-                placeholder="Phone number"
-              />
-            </form>
+            <NameForm />
           </div>
         </div>
 
@@ -36,8 +54,23 @@ class NameArea extends Component {
   }
 }
 
+class EducationForm extends Component {
+  render() {
+    const { form } = this.props;
+    return (
+      <form>
+        <TextForm name="university" placeholder="University" />
+        <TextForm name="year" placeholder="Year" />
+        <TextForm name="additional" placeholder="Additional Info" />
+      </form>
+    );
+  }
+}
+
 class EducationArea extends Component {
   render() {
+    const { info } = this.props;
+
     return (
       <div>
         <div className="flex-row">
@@ -47,22 +80,36 @@ class EducationArea extends Component {
           </div>
           <div className="flex-large">
             <h5>
-              Princeton <br />
-              Class of 2005
+              {info.university} <br />
+              Class of {info.yearGraduated}
             </h5>
-            <p>Graduated with Honors</p>
+            <p>{info.notes}</p>
 
-            <form>
-              <input type="text" id="name" placeholder="University" />
-              <input type="text" id="name" placeholder="Year" />
-              <input type="text" id="name" placeholder="Additional info" />
-            </form>
+            <EducationForm />
           </div>
         </div>
 
         <hr />
       </div>
     );
+  }
+}
+
+class JobsArea extends Component {
+  render() {
+    const { jobs } = this.props;
+    const jobBlocks = jobs.map((job, index) => {
+      return (
+        <div key={index}>
+          <h5>
+            {job.company} <br />
+            {job.yearIn}-{job.yearOut}
+          </h5>
+          <p>{job.description}</p>
+        </div>
+      );
+    });
+    return <div>{jobBlocks}</div>;
   }
 }
 
@@ -76,19 +123,7 @@ class ExperienceArea extends Component {
             <input type="button" value="Edit" />
           </div>
           <div className="flex-large">
-            <h5>
-              IBM <br />
-              2000-2005
-            </h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel
-              purus sed, pharetra malesuada dolor. Aliquam erat volutpat.
-              Maecenas cursus eleifend porta. Nulla facilisi. Praesent
-              condimentum elementum cursus. Nulla facilisi. Fusce auctor orci
-              sit amet urna tristique vestibulum.
-            </p>
-
+            <JobsArea jobs={this.props.info} />
             <form>
               <input type="text" id="name" placeholder="Company" />
               <input type="text" id="name" placeholder="Year Started" />
@@ -97,18 +132,6 @@ class ExperienceArea extends Component {
             </form>
 
             <hr />
-            <h5>
-              Microsoft <br />
-              2006-2010
-            </h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel
-              purus sed, pharetra malesuada dolor. Aliquam erat volutpat.
-              Maecenas cursus eleifend porta. Nulla facilisi. Praesent
-              condimentum elementum cursus. Nulla facilisi. Fusce auctor orci
-              sit amet urna tristique vestibulum.
-            </p>
           </div>
         </div>
         <hr />
@@ -118,6 +141,10 @@ class ExperienceArea extends Component {
 }
 
 class Footer extends Component {
+  componentDidMount() {
+    document.title = "My CV";
+  }
+
   render() {
     return (
       <div className="footer">
@@ -135,29 +162,39 @@ class Footer extends Component {
 }
 
 const generalInfo = {
-  name: "",
-  email: "",
-  phone: "",
-  university: "",
-  yearIn: "",
-  yearOut: "",
-  notes: "",
+  name: "James Donovan",
+  email: "jamesd@gmail.com",
+  phone: "956 581 7515",
+  university: "Princeton",
+  yearGraduated: "2000",
+  notes: "Graduated with Honors",
 };
 
-const workInfo = {
-  company: "",
-  description: "",
-  yearIn: "",
-  yearOut: "",
-};
+const workInfo = [
+  {
+    company: "IBM",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+    yearIn: "2005",
+    yearOut: "2010",
+  },
+
+  {
+    company: "Apple",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+    yearIn: "2010",
+    yearOut: "2015",
+  },
+];
 
 class CvDoc extends Component {
   render() {
     return (
       <div className="small-container">
-        <NameArea />
-        <EducationArea />
-        <ExperienceArea />
+        <NameArea info={this.props.generalInfo} />
+        <EducationArea info={this.props.generalInfo} />
+        <ExperienceArea info={this.props.workInfo} />
         <Footer />
       </div>
     );
@@ -166,7 +203,7 @@ class CvDoc extends Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <CvDoc />
+    <CvDoc generalInfo={generalInfo} workInfo={workInfo} />
   </React.StrictMode>,
   document.getElementById("root")
 );
