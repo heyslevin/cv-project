@@ -16,6 +16,17 @@ class App extends Component {
               jamesdonovan@gmail.com <br />
               (956) 581 7332
             </h5>
+
+            <form>
+              <input type="text" id="name" placeholder="Full Name" />
+              <input type="text" id="name" placeholder="Email" />
+              <input
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                id="tel"
+                placeholder="Phone number"
+              />
+            </form>
           </div>
         </div>
 
@@ -32,6 +43,12 @@ class App extends Component {
               Class of 2005
             </h5>
             <p>Graduated with Honors</p>
+
+            <form>
+              <input type="text" id="name" placeholder="University" />
+              <input type="text" id="name" placeholder="Year" />
+              <input type="text" id="name" placeholder="Additional info" />
+            </form>
           </div>
         </div>
 
@@ -55,6 +72,13 @@ class App extends Component {
               condimentum elementum cursus. Nulla facilisi. Fusce auctor orci
               sit amet urna tristique vestibulum.
             </p>
+
+            <form>
+              <input type="text" id="name" placeholder="Company" />
+              <input type="text" id="name" placeholder="Year Started" />
+              <input type="text" id="name" placeholder="Year Ended" />
+              <textarea id="name" placeholder="Description" />
+            </form>
 
             <hr />
             <h5>
