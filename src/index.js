@@ -4,23 +4,32 @@ import "./index.css";
 
 class TextForm extends Component {
   render() {
-    const { name, placeholder } = this.props;
-    return <input type="text" id={name} placeholder={placeholder} />;
+    const { name, placeholder, onChange } = this.props;
+    return (
+      <input
+        type="text"
+        name={name}
+        placeholder={placeholder}
+        onChange={onChange}
+      />
+    );
   }
 }
 
 class NameForm extends Component {
   render() {
-    const { form } = this.props;
+    const { formId, handleChange } = this.props;
     return (
-      <form>
-        <TextForm name="name" placeholder="Full Name" />
-        <TextForm name="name" placeholder="Email" />
+      <form id={formId}>
+        <TextForm name="name" placeholder="Full Name" onChange={handleChange} />
+        <TextForm name="email" placeholder="Email" onChange={handleChange} />
         <input
+          name="phone"
           type="tel"
           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
           id="tel"
           placeholder="Phone number"
+          onChange={handleChange}
         />
       </form>
     );
@@ -28,8 +37,23 @@ class NameForm extends Component {
 }
 
 class NameArea extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
   render() {
     const { info } = this.props;
+    const nameForm = "nameForm";
 
     return (
       <div>
@@ -37,6 +61,7 @@ class NameArea extends Component {
           <div className="flex-large">
             <h1>{info.name}</h1>
             <input type="button" value="Edit" />
+            <input form={nameForm} type="button" value="Save" />
           </div>
           <div className="flex-large">
             <h5>
@@ -44,7 +69,7 @@ class NameArea extends Component {
               {info.phone}
             </h5>
 
-            <NameForm />
+            <NameForm formId={nameForm} handleChange={this.handleChange} />
           </div>
         </div>
 
@@ -56,9 +81,9 @@ class NameArea extends Component {
 
 class EducationForm extends Component {
   render() {
-    const { form } = this.props;
+    const { formId } = this.props;
     return (
-      <form>
+      <form id={formId}>
         <TextForm name="university" placeholder="University" />
         <TextForm name="year" placeholder="Year" />
         <TextForm name="additional" placeholder="Additional Info" />
@@ -70,6 +95,7 @@ class EducationForm extends Component {
 class EducationArea extends Component {
   render() {
     const { info } = this.props;
+    const educationForm = "educationForm";
 
     return (
       <div>
@@ -77,6 +103,7 @@ class EducationArea extends Component {
           <div className="flex-large">
             <h2>Education</h2>
             <input type="button" value="Edit" />
+            <input form={educationForm} type="button" value="Save" />
           </div>
           <div className="flex-large">
             <h5>
@@ -85,7 +112,7 @@ class EducationArea extends Component {
             </h5>
             <p>{info.notes}</p>
 
-            <EducationForm />
+            <EducationForm formId={educationForm} />
           </div>
         </div>
 
@@ -115,16 +142,19 @@ class JobsArea extends Component {
 
 class ExperienceArea extends Component {
   render() {
+    const jobForm = "jobForm";
+
     return (
       <div>
         <div className="flex-row">
           <div className="flex-large">
             <h2>Experience</h2>
             <input type="button" value="Edit" />
+            <input form={jobForm} type="button" value="Save" />
           </div>
           <div className="flex-large">
             <JobsArea jobs={this.props.info} />
-            <form>
+            <form id={jobForm}>
               <input type="text" id="name" placeholder="Company" />
               <input type="text" id="name" placeholder="Year Started" />
               <input type="text" id="name" placeholder="Year Ended" />
@@ -161,40 +191,72 @@ class Footer extends Component {
   }
 }
 
-const generalInfo = {
-  name: "James Donovan",
-  email: "jamesd@gmail.com",
-  phone: "956 581 7515",
-  university: "Princeton",
-  yearGraduated: "2000",
-  notes: "Graduated with Honors",
-};
+// const generalInfo = {
+//   name: "James Donovan",
+//   email: "jamesd@gmail.com",
+//   phone: "956 581 7515",
+//   university: "Princeton",
+//   yearGraduated: "2000",
+//   notes: "Graduated with Honors",
+// };
 
-const workInfo = [
-  {
-    company: "IBM",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
-    yearIn: "2005",
-    yearOut: "2010",
-  },
+// const workInfo = [
+//   {
+//     company: "IBM",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+//     yearIn: "2005",
+//     yearOut: "2010",
+//   },
 
-  {
-    company: "Apple",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
-    yearIn: "2010",
-    yearOut: "2015",
-  },
-];
+//   {
+//     company: "Apple",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+//     yearIn: "2010",
+//     yearOut: "2015",
+//   },
+// ];
 
 class CvDoc extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      generalInfo: {
+        name: "James Donovan",
+        email: "jamesd@gmail.com",
+        phone: "956 581 7515",
+        university: "Princeton",
+        yearGraduated: "2000",
+        notes: "Graduated with Honors",
+      },
+
+      workInfo: [
+        {
+          company: "IBM",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+          yearIn: "2005",
+          yearOut: "2010",
+        },
+
+        {
+          company: "Apple",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+          yearIn: "2010",
+          yearOut: "2015",
+        },
+      ],
+    };
+  }
   render() {
+    const { generalInfo, workInfo } = this.state;
     return (
       <div className="small-container">
-        <NameArea info={this.props.generalInfo} />
-        <EducationArea info={this.props.generalInfo} />
-        <ExperienceArea info={this.props.workInfo} />
+        <NameArea info={generalInfo} />
+        <EducationArea info={generalInfo} />
+        <ExperienceArea info={workInfo} />
         <Footer />
       </div>
     );
@@ -203,7 +265,7 @@ class CvDoc extends Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <CvDoc generalInfo={generalInfo} workInfo={workInfo} />
+    <CvDoc />
   </React.StrictMode>,
   document.getElementById("root")
 );
