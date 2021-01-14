@@ -25,9 +25,7 @@ class NameForm extends Component {
         <TextForm name="email" placeholder="Email" onChange={handleChange} />
         <input
           name="phone"
-          type="tel"
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-          id="tel"
+          type="text"
           placeholder="Phone number"
           onChange={handleChange}
         />
@@ -41,6 +39,11 @@ class NameArea extends Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+  }
+
+  submitForm() {
+    this.props.handleSubmit(this.state);
   }
 
   handleChange(e) {
@@ -61,7 +64,12 @@ class NameArea extends Component {
           <div className="flex-large">
             <h1>{info.name}</h1>
             <input type="button" value="Edit" />
-            <input form={nameForm} type="button" value="Save" />
+            <input
+              form={nameForm}
+              type="button"
+              value="Save"
+              onClick={this.submitForm}
+            />
           </div>
           <div className="flex-large">
             <h5>
@@ -249,12 +257,21 @@ class CvDoc extends Component {
         },
       ],
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  handleSubmit(newstate) {
+    this.setState({
+      generalInfo: newstate,
+    });
+  }
+
   render() {
     const { generalInfo, workInfo } = this.state;
     return (
       <div className="small-container">
-        <NameArea info={generalInfo} />
+        <NameArea info={generalInfo} handleSubmit={this.handleSubmit} />
         <EducationArea info={generalInfo} />
         <ExperienceArea info={workInfo} />
         <Footer />
