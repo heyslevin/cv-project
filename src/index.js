@@ -9,7 +9,7 @@ class TextForm extends Component {
       <input
         type="text"
         name={name}
-        placeholder={placeholder}
+        defaultValue={placeholder}
         onChange={onChange}
       />
     );
@@ -18,15 +18,19 @@ class TextForm extends Component {
 
 class NameForm extends Component {
   render() {
-    const { formId, handleChange } = this.props;
+    const { formId, handleChange, info } = this.props;
     return (
       <form id={formId}>
-        <TextForm name="name" placeholder="Full Name" onChange={handleChange} />
-        <TextForm name="email" placeholder="Email" onChange={handleChange} />
+        <TextForm name="name" placeholder={info.name} onChange={handleChange} />
+        <TextForm
+          name="email"
+          placeholder={info.email}
+          onChange={handleChange}
+        />
         <input
           name="phone"
           type="text"
-          placeholder="Phone number"
+          defaultValue={info.phone}
           onChange={handleChange}
         />
       </form>
@@ -38,32 +42,62 @@ class NameArea extends Component {
   constructor(props) {
     super(props);
 
+    let initialState = props.info;
+
+    this.state = {
+      info: initialState,
+      edit: false,
+    };
+
     this.handleChange = this.handleChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
+  }
+
+  handleEditClick() {
+    this.setState({
+      edit: true,
+    });
   }
 
   submitForm() {
-    this.props.handleSubmit(this.state);
+    this.props.handleSubmit(this.state.info);
+
+    this.setState({
+      edit: false,
+    });
   }
 
   handleChange(e) {
     const { name, value } = e.target;
 
-    this.setState({
-      [name]: value,
-    });
+    this.setState((prevState) => ({
+      info: { ...prevState.info, [name]: value },
+    }));
   }
 
   render() {
     const { info } = this.props;
     const nameForm = "nameForm";
+    const displayEdit = this.state.edit;
+    let displayForm;
+
+    if (displayEdit) {
+      displayForm = (
+        <NameForm
+          info={this.props.info}
+          formId={nameForm}
+          handleChange={this.handleChange}
+        />
+      );
+    }
 
     return (
       <div>
         <div className="flex-row">
           <div className="flex-large">
             <h1>{info.name}</h1>
-            <input type="button" value="Edit" />
+            <input type="button" value="Edit" onClick={this.handleEditClick} />
             <input
               form={nameForm}
               type="button"
@@ -76,8 +110,8 @@ class NameArea extends Component {
               {info.email} <br />
               {info.phone}
             </h5>
-
-            <NameForm formId={nameForm} handleChange={this.handleChange} />
+            {}
+            {displayForm}
           </div>
         </div>
 
@@ -234,6 +268,9 @@ class CvDoc extends Component {
         name: "James Donovan",
         email: "jamesd@gmail.com",
         phone: "956 581 7515",
+      },
+
+      educationInfo: {
         university: "Princeton",
         yearGraduated: "2000",
         notes: "Graduated with Honors",
@@ -268,11 +305,11 @@ class CvDoc extends Component {
   }
 
   render() {
-    const { generalInfo, workInfo } = this.state;
+    const { generalInfo, workInfo, educationInfo } = this.state;
     return (
       <div className="small-container">
         <NameArea info={generalInfo} handleSubmit={this.handleSubmit} />
-        <EducationArea info={generalInfo} />
+        <EducationArea info={educationInfo} />
         <ExperienceArea info={workInfo} />
         <Footer />
       </div>
