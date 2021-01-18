@@ -4,14 +4,9 @@ import "./index.css";
 
 class TextForm extends Component {
   render() {
-    const { name, placeholder, onChange } = this.props;
+    const { name, value, onChange } = this.props;
     return (
-      <input
-        type="text"
-        name={name}
-        defaultValue={placeholder}
-        onChange={onChange}
-      />
+      <input type="text" name={name} defaultValue={value} onChange={onChange} />
     );
   }
 }
@@ -21,12 +16,8 @@ class NameForm extends Component {
     const { formId, handleChange, info } = this.props;
     return (
       <form id={formId}>
-        <TextForm name="name" placeholder={info.name} onChange={handleChange} />
-        <TextForm
-          name="email"
-          placeholder={info.email}
-          onChange={handleChange}
-        />
+        <TextForm name="name" value={info.name} onChange={handleChange} />
+        <TextForm name="email" value={info.email} onChange={handleChange} />
         <input
           name="phone"
           type="text"
@@ -49,31 +40,9 @@ class NameArea extends Component {
       edit: false,
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.submitForm = this.submitForm.bind(this);
-    this.handleEditClick = this.handleEditClick.bind(this);
-  }
-
-  handleEditClick() {
-    this.setState({
-      edit: true,
-    });
-  }
-
-  submitForm() {
-    this.props.handleSubmit(this.state.info);
-
-    this.setState({
-      edit: false,
-    });
-  }
-
-  handleChange(e) {
-    const { name, value } = e.target;
-
-    this.setState((prevState) => ({
-      info: { ...prevState.info, [name]: value },
-    }));
+    this.handleChange = this.props.handleChange.bind(this);
+    this.submitForm = this.props.submitForm.bind(this);
+    this.handleEditClick = this.props.handleEditClick.bind(this);
   }
 
   render() {
@@ -123,29 +92,68 @@ class NameArea extends Component {
 
 class EducationForm extends Component {
   render() {
-    const { formId } = this.props;
+    const { formId, info, handleChange } = this.props;
     return (
       <form id={formId}>
-        <TextForm name="university" placeholder="University" />
-        <TextForm name="year" placeholder="Year" />
-        <TextForm name="additional" placeholder="Additional Info" />
+        <TextForm
+          name="university"
+          onChange={handleChange}
+          value={info.university}
+        />
+        <TextForm
+          name="yearGraduated"
+          onChange={handleChange}
+          value={info.yearGraduated}
+        />
+        <TextForm name="notes" onChange={handleChange} value={info.notes} />
       </form>
     );
   }
 }
 
 class EducationArea extends Component {
+  constructor(props) {
+    super(props);
+
+    let initialState = props.info;
+
+    this.state = {
+      info: initialState,
+      edit: false,
+    };
+
+    this.handleChange = this.props.handleChange.bind(this);
+    this.submitForm = this.props.submitForm.bind(this);
+    this.handleEditClick = this.props.handleEditClick.bind(this);
+  }
   render() {
     const { info } = this.props;
     const educationForm = "educationForm";
+    const displayEdit = this.state.edit;
+    let displayForm;
+
+    if (displayEdit) {
+      displayForm = (
+        <EducationForm
+          info={this.props.info}
+          formId={educationForm}
+          handleChange={this.handleChange}
+        />
+      );
+    }
 
     return (
       <div>
         <div className="flex-row">
           <div className="flex-large">
             <h2>Education</h2>
-            <input type="button" value="Edit" />
-            <input form={educationForm} type="button" value="Save" />
+            <input type="button" value="Edit" onClick={this.handleEditClick} />
+            <input
+              form={educationForm}
+              type="button"
+              value="Save"
+              onClick={this.submitForm}
+            />
           </div>
           <div className="flex-large">
             <h5>
@@ -153,8 +161,7 @@ class EducationArea extends Component {
               Class of {info.yearGraduated}
             </h5>
             <p>{info.notes}</p>
-
-            <EducationForm formId={educationForm} />
+            {displayForm}
           </div>
         </div>
 
@@ -183,26 +190,47 @@ class JobsArea extends Component {
 }
 
 class ExperienceArea extends Component {
+  constructor(props) {
+    super(props);
+
+    let initialState = props.info;
+
+    this.state = {
+      info: initialState,
+      edit: false,
+    };
+
+    this.handleChange = this.props.handleChange.bind(this);
+    this.submitForm = this.props.submitForm.bind(this);
+    this.handleEditClick = this.props.handleEditClick.bind(this);
+  }
   render() {
     const jobForm = "jobForm";
+    const displayEdit = this.state.edit;
+    let displayForm;
+
+    if (displayEdit) {
+      displayForm = (
+        <form id={jobForm}>
+          <input type="text" id="name" placeholder="Company" />
+          <input type="text" id="name" placeholder="Year Started" />
+          <input type="text" id="name" placeholder="Year Ended" />
+          <textarea id="name" placeholder="Description" />
+        </form>
+      );
+    }
 
     return (
       <div>
         <div className="flex-row">
           <div className="flex-large">
             <h2>Experience</h2>
-            <input type="button" value="Edit" />
+            <input type="button" value="Edit" onClick={this.handleEditClick} />
             <input form={jobForm} type="button" value="Save" />
           </div>
           <div className="flex-large">
             <JobsArea jobs={this.props.info} />
-            <form id={jobForm}>
-              <input type="text" id="name" placeholder="Company" />
-              <input type="text" id="name" placeholder="Year Started" />
-              <input type="text" id="name" placeholder="Year Ended" />
-              <textarea id="name" placeholder="Description" />
-            </form>
-
+            {displayForm}
             <hr />
           </div>
         </div>
@@ -295,12 +323,41 @@ class CvDoc extends Component {
       ],
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleNameSubmit = this.handleNameSubmit.bind(this);
+    this.handleEducationSubmit = this.handleEducationSubmit.bind(this);
   }
 
-  handleSubmit(newstate) {
+  handleNameSubmit(newstate) {
     this.setState({
       generalInfo: newstate,
+    });
+  }
+
+  handleEducationSubmit(newstate) {
+    this.setState({
+      educationInfo: newstate,
+    });
+  }
+
+  handleEditClick() {
+    this.setState({
+      edit: true,
+    });
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+
+    this.setState((prevState) => ({
+      info: { ...prevState.info, [name]: value },
+    }));
+  }
+
+  submitForm() {
+    this.props.handleSubmit(this.state.info);
+
+    this.setState({
+      edit: false,
     });
   }
 
@@ -308,9 +365,27 @@ class CvDoc extends Component {
     const { generalInfo, workInfo, educationInfo } = this.state;
     return (
       <div className="small-container">
-        <NameArea info={generalInfo} handleSubmit={this.handleSubmit} />
-        <EducationArea info={educationInfo} />
-        <ExperienceArea info={workInfo} />
+        <NameArea
+          info={generalInfo}
+          handleEditClick={this.handleEditClick}
+          handleSubmit={this.handleNameSubmit}
+          handleChange={this.handleChange}
+          submitForm={this.submitForm}
+        />
+        <EducationArea
+          info={educationInfo}
+          handleEditClick={this.handleEditClick}
+          handleSubmit={this.handleEducationSubmit}
+          handleChange={this.handleChange}
+          submitForm={this.submitForm}
+        />{" "}
+        <ExperienceArea
+          info={workInfo}
+          handleEditClick={this.handleEditClick}
+          handleSubmit={this.handleSubmit}
+          handleChange={this.handleChange}
+          submitForm={this.submitForm}
+        />
         <Footer />
       </div>
     );
