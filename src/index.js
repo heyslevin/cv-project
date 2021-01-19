@@ -177,7 +177,7 @@ class JobsArea extends Component {
     const { jobs } = this.props;
     let displayDelete;
 
-    if (this.props.edit) {
+    if (this.props.deleteState) {
       displayDelete = (
         <button className="icon">
           <DeleteIcon />
@@ -210,25 +210,70 @@ class ExperienceArea extends Component {
     this.state = {
       info: initialState,
       edit: false,
+      delete: false,
     };
 
     this.handleChange = this.props.handleChange.bind(this);
     this.submitForm = this.props.submitForm.bind(this);
     this.handleEditClick = this.props.handleEditClick.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
+
+  handleDeleteClick = () => {
+    this.setState({ delete: true });
+  };
+
+  deleteItem = (index) => {
+    const { info } = this.state.info;
+    this.setState({
+      info: info.filter((item, i) => {
+        return i !== index;
+      }),
+    });
+  };
+
   render() {
     const jobForm = "jobForm";
     const displayEdit = this.state.edit;
     let displayForm;
+    let saveButton;
 
     if (displayEdit) {
       displayForm = (
         <form id={jobForm}>
-          <input type="text" id="name" placeholder="Company" />
-          <input type="text" id="name" placeholder="Year Started" />
-          <input type="text" id="name" placeholder="Year Ended" />
-          <textarea id="name" placeholder="Description" />
+          <input
+            type="text"
+            name="company"
+            placeholder="Company"
+            onChange={this.handleChange}
+          />
+          <input
+            type="text"
+            name="yearIn"
+            placeholder="Year Started"
+            onChange={this.handleChange}
+          />
+          <input
+            type="text"
+            name="yearOut"
+            placeholder="Year Ended"
+            onChange={this.handleChange}
+          />
+          <textarea
+            name="description"
+            placeholder="Description"
+            onChange={this.handleChange}
+          />
         </form>
+      );
+      saveButton = (
+        <input
+          form={jobForm}
+          type="button"
+          value="Save"
+          onClick={this.submitForm}
+        />
       );
     }
 
@@ -237,11 +282,25 @@ class ExperienceArea extends Component {
         <div className="flex-row">
           <div className="flex-large">
             <h2>Experience</h2>
-            <input type="button" value="Edit" onClick={this.handleEditClick} />
-            <input form={jobForm} type="button" value="Save" />
+            <input
+              type="button"
+              value="Add Job"
+              onClick={this.handleEditClick}
+            />
+            <input
+              type="button"
+              value="Delete Job"
+              onClick={this.handleDeleteClick}
+            />
+            {saveButton}
           </div>
           <div className="flex-large">
-            <JobsArea jobs={this.props.info} edit={this.state.edit} />
+            <JobsArea
+              jobs={this.props.info}
+              edit={this.state.edit}
+              deleteState={this.state.delete}
+              deleteItem={this.deleteItem}
+            />
             {displayForm}
             <hr />
           </div>
@@ -337,6 +396,7 @@ class CvDoc extends Component {
 
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.handleEducationSubmit = this.handleEducationSubmit.bind(this);
+    this.handleJobsSubmit = this.handleJobsSubmit.bind(this);
   }
 
   handleNameSubmit(newstate) {
@@ -349,6 +409,11 @@ class CvDoc extends Component {
     this.setState({
       educationInfo: newstate,
     });
+  }
+
+  handleJobsSubmit(newstate) {
+    console.log(this.state);
+    this.setState({ workInfo: [...this.state.workInfo, newstate] });
   }
 
   handleEditClick() {
@@ -394,7 +459,7 @@ class CvDoc extends Component {
         <ExperienceArea
           info={workInfo}
           handleEditClick={this.handleEditClick}
-          handleSubmit={this.handleSubmit}
+          handleSubmit={this.handleJobsSubmit}
           handleChange={this.handleChange}
           submitForm={this.submitForm}
         />
