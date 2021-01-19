@@ -173,23 +173,33 @@ class EducationArea extends Component {
 }
 
 class JobsArea extends Component {
-  render() {
-    const { jobs } = this.props;
-    let displayDelete;
+  constructor(props) {
+    super(props);
 
+    this.displayDelete = this.displayDelete.bind(this);
+  }
+
+  displayDelete(index) {
+    let displayDelete;
     if (this.props.deleteState) {
       displayDelete = (
-        <button className="icon">
+        <button className="icon" onClick={() => this.props.deleteItem(index)}>
           <DeleteIcon />
         </button>
       );
     }
 
+    return displayDelete;
+  }
+
+  render() {
+    const { jobs } = this.props;
+
     const jobBlocks = jobs.map((job, index) => {
       return (
         <div key={index}>
           <h5>
-            {job.company} {displayDelete}
+            {job.company} {this.displayDelete(index)}
             <br />
             {job.yearIn}-{job.yearOut}
           </h5>
@@ -206,32 +216,17 @@ class ExperienceArea extends Component {
     super(props);
 
     let initialState = props.info;
+    let initialDeleteStatus = props.deleteStatus;
 
     this.state = {
       info: initialState,
-      edit: false,
-      delete: false,
+      delete: initialDeleteStatus,
     };
 
     this.handleChange = this.props.handleChange.bind(this);
     this.submitForm = this.props.submitForm.bind(this);
     this.handleEditClick = this.props.handleEditClick.bind(this);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
   }
-
-  handleDeleteClick = () => {
-    this.setState({ delete: true });
-  };
-
-  deleteItem = (index) => {
-    const { info } = this.state.info;
-    this.setState({
-      info: info.filter((item, i) => {
-        return i !== index;
-      }),
-    });
-  };
 
   render() {
     const jobForm = "jobForm";
@@ -290,7 +285,7 @@ class ExperienceArea extends Component {
             <input
               type="button"
               value="Delete Job"
-              onClick={this.handleDeleteClick}
+              onClick={this.props.handleDelete}
             />
             {saveButton}
           </div>
@@ -298,8 +293,8 @@ class ExperienceArea extends Component {
             <JobsArea
               jobs={this.props.info}
               edit={this.state.edit}
-              deleteState={this.state.delete}
-              deleteItem={this.deleteItem}
+              deleteState={this.props.deleteStatus}
+              deleteItem={this.props.deleteItem}
             />
             {displayForm}
             <hr />
@@ -363,6 +358,7 @@ class CvDoc extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      deleteStatus: false,
       generalInfo: {
         name: "James Donovan",
         email: "jamesd@gmail.com",
@@ -397,6 +393,8 @@ class CvDoc extends Component {
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.handleEducationSubmit = this.handleEducationSubmit.bind(this);
     this.handleJobsSubmit = this.handleJobsSubmit.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleNameSubmit(newstate) {
@@ -412,7 +410,6 @@ class CvDoc extends Component {
   }
 
   handleJobsSubmit(newstate) {
-    console.log(this.state);
     this.setState({ workInfo: [...this.state.workInfo, newstate] });
   }
 
@@ -435,11 +432,26 @@ class CvDoc extends Component {
 
     this.setState({
       edit: false,
+      info: {},
     });
   }
 
+  deleteItem = (index) => {
+    const { workInfo } = this.state;
+    this.setState({
+      workInfo: workInfo.filter((item, i) => {
+        return i !== index;
+      }),
+      deleteStatus: false,
+    });
+  };
+
+  handleDelete = () => {
+    this.setState({ deleteStatus: true });
+  };
+
   render() {
-    const { generalInfo, workInfo, educationInfo } = this.state;
+    const { generalInfo, workInfo, educationInfo, deleteStatus } = this.state;
     return (
       <div className="small-container">
         <NameArea
@@ -458,10 +470,13 @@ class CvDoc extends Component {
         />{" "}
         <ExperienceArea
           info={workInfo}
+          deleteStatus={deleteStatus}
           handleEditClick={this.handleEditClick}
           handleSubmit={this.handleJobsSubmit}
           handleChange={this.handleChange}
           submitForm={this.submitForm}
+          deleteItem={this.deleteItem}
+          handleDelete={this.handleDelete}
         />
         <Footer />
       </div>
