@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 class TextForm extends Component {
   render() {
@@ -174,11 +175,22 @@ class EducationArea extends Component {
 class JobsArea extends Component {
   render() {
     const { jobs } = this.props;
+    let displayDelete;
+
+    if (this.props.edit) {
+      displayDelete = (
+        <button className="icon">
+          <DeleteIcon />
+        </button>
+      );
+    }
+
     const jobBlocks = jobs.map((job, index) => {
       return (
         <div key={index}>
           <h5>
-            {job.company} <br />
+            {job.company} {displayDelete}
+            <br />
             {job.yearIn}-{job.yearOut}
           </h5>
           <p>{job.description}</p>
@@ -229,7 +241,7 @@ class ExperienceArea extends Component {
             <input form={jobForm} type="button" value="Save" />
           </div>
           <div className="flex-large">
-            <JobsArea jobs={this.props.info} />
+            <JobsArea jobs={this.props.info} edit={this.state.edit} />
             {displayForm}
             <hr />
           </div>
