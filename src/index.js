@@ -173,23 +173,33 @@ class EducationArea extends Component {
 }
 
 class JobsArea extends Component {
-  render() {
-    const { jobs } = this.props;
-    let displayDelete;
+  constructor(props) {
+    super(props);
 
-    if (this.props.edit) {
+    this.displayDelete = this.displayDelete.bind(this);
+  }
+
+  displayDelete(index) {
+    let displayDelete;
+    if (this.props.deleteState) {
       displayDelete = (
-        <button className="icon">
+        <button className="icon" onClick={() => this.props.deleteItem(index)}>
           <DeleteIcon />
         </button>
       );
     }
 
+    return displayDelete;
+  }
+
+  render() {
+    const { jobs } = this.props;
+
     const jobBlocks = jobs.map((job, index) => {
       return (
         <div key={index}>
           <h5>
-            {job.company} {displayDelete}
+            {job.company} {this.displayDelete(index)}
             <br />
             {job.yearIn}-{job.yearOut}
           </h5>
@@ -206,29 +216,59 @@ class ExperienceArea extends Component {
     super(props);
 
     let initialState = props.info;
+    let initialDeleteStatus = props.deleteStatus;
 
     this.state = {
       info: initialState,
-      edit: false,
+      delete: initialDeleteStatus,
     };
 
     this.handleChange = this.props.handleChange.bind(this);
     this.submitForm = this.props.submitForm.bind(this);
     this.handleEditClick = this.props.handleEditClick.bind(this);
   }
+
   render() {
     const jobForm = "jobForm";
     const displayEdit = this.state.edit;
     let displayForm;
+    let saveButton;
 
     if (displayEdit) {
       displayForm = (
         <form id={jobForm}>
-          <input type="text" id="name" placeholder="Company" />
-          <input type="text" id="name" placeholder="Year Started" />
-          <input type="text" id="name" placeholder="Year Ended" />
-          <textarea id="name" placeholder="Description" />
+          <input
+            type="text"
+            name="company"
+            placeholder="Company"
+            onChange={this.handleChange}
+          />
+          <input
+            type="text"
+            name="yearIn"
+            placeholder="Year Started"
+            onChange={this.handleChange}
+          />
+          <input
+            type="text"
+            name="yearOut"
+            placeholder="Year Ended"
+            onChange={this.handleChange}
+          />
+          <textarea
+            name="description"
+            placeholder="Description"
+            onChange={this.handleChange}
+          />
         </form>
+      );
+      saveButton = (
+        <input
+          form={jobForm}
+          type="button"
+          value="Save"
+          onClick={this.submitForm}
+        />
       );
     }
 
@@ -237,11 +277,25 @@ class ExperienceArea extends Component {
         <div className="flex-row">
           <div className="flex-large">
             <h2>Experience</h2>
-            <input type="button" value="Edit" onClick={this.handleEditClick} />
-            <input form={jobForm} type="button" value="Save" />
+            <input
+              type="button"
+              value="Add Job"
+              onClick={this.handleEditClick}
+            />
+            <input
+              type="button"
+              value="Delete Job"
+              onClick={this.props.handleDelete}
+            />
+            {saveButton}
           </div>
           <div className="flex-large">
-            <JobsArea jobs={this.props.info} edit={this.state.edit} />
+            <JobsArea
+              jobs={this.props.info}
+              edit={this.state.edit}
+              deleteState={this.props.deleteStatus}
+              deleteItem={this.props.deleteItem}
+            />
             {displayForm}
             <hr />
           </div>
@@ -304,6 +358,7 @@ class CvDoc extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      deleteStatus: false,
       generalInfo: {
         name: "James Donovan",
         email: "jamesd@gmail.com",
@@ -337,6 +392,9 @@ class CvDoc extends Component {
 
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.handleEducationSubmit = this.handleEducationSubmit.bind(this);
+    this.handleJobsSubmit = this.handleJobsSubmit.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleNameSubmit(newstate) {
@@ -349,6 +407,10 @@ class CvDoc extends Component {
     this.setState({
       educationInfo: newstate,
     });
+  }
+
+  handleJobsSubmit(newstate) {
+    this.setState({ workInfo: [...this.state.workInfo, newstate] });
   }
 
   handleEditClick() {
@@ -370,11 +432,26 @@ class CvDoc extends Component {
 
     this.setState({
       edit: false,
+      info: {},
     });
   }
 
+  deleteItem = (index) => {
+    const { workInfo } = this.state;
+    this.setState({
+      workInfo: workInfo.filter((item, i) => {
+        return i !== index;
+      }),
+      deleteStatus: false,
+    });
+  };
+
+  handleDelete = () => {
+    this.setState({ deleteStatus: true });
+  };
+
   render() {
-    const { generalInfo, workInfo, educationInfo } = this.state;
+    const { generalInfo, workInfo, educationInfo, deleteStatus } = this.state;
     return (
       <div className="small-container">
         <NameArea
@@ -393,10 +470,13 @@ class CvDoc extends Component {
         />{" "}
         <ExperienceArea
           info={workInfo}
+          deleteStatus={deleteStatus}
           handleEditClick={this.handleEditClick}
-          handleSubmit={this.handleSubmit}
+          handleSubmit={this.handleJobsSubmit}
           handleChange={this.handleChange}
           submitForm={this.submitForm}
+          deleteItem={this.deleteItem}
+          handleDelete={this.handleDelete}
         />
         <Footer />
       </div>
