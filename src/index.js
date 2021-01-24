@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -12,83 +12,79 @@ class TextForm extends Component {
   }
 }
 
-class NameForm extends Component {
-  render() {
-    const { formId, handleChange, info } = this.props;
-    return (
-      <form id={formId}>
-        <TextForm name="name" value={info.name} onChange={handleChange} />
-        <TextForm name="email" value={info.email} onChange={handleChange} />
-        <input
-          name="phone"
-          type="text"
-          defaultValue={info.phone}
-          onChange={handleChange}
-        />
-      </form>
-    );
-  }
+function NameForm(props) {
+  const { formId, handleChange, info } = props;
+  return (
+    <form id={formId}>
+      <TextForm name="name" value={info.name} onChange={handleChange} />
+      <TextForm name="email" value={info.email} onChange={handleChange} />
+      <input
+        name="phone"
+        type="text"
+        defaultValue={info.phone}
+        onChange={handleChange}
+      />
+    </form>
+  );
 }
 
-class NameArea extends Component {
-  constructor(props) {
-    super(props);
+function NameArea(props) {
+  let initialState = props.info;
 
-    let initialState = props.info;
+  // const [info, setInfo] = useState(initialState);
+  const [nameInfo, setInfo] = useState(initialState);
+  const [edit, setEdit] = useState(false);
 
-    this.state = {
-      info: initialState,
-      edit: false,
-    };
+  const { info } = props;
+  const nameForm = "nameForm";
+  const displayEdit = edit;
 
-    this.handleChange = this.props.handleChange.bind(this);
-    this.submitForm = this.props.submitForm.bind(this);
-    this.handleEditClick = this.props.handleEditClick.bind(this);
+  function handleChange(e) {
+    const { name, value } = e.target;
+
+    setInfo((prevState) => ({ ...prevState, [name]: value }));
   }
 
-  render() {
-    const { info } = this.props;
-    const nameForm = "nameForm";
-    const displayEdit = this.state.edit;
-    let displayForm;
+  function submitForm() {
+    props.handleSubmit(nameInfo);
 
-    if (displayEdit) {
-      displayForm = (
-        <NameForm
-          info={this.props.info}
-          formId={nameForm}
-          handleChange={this.handleChange}
-        />
-      );
-    }
+    setEdit(false);
+    setInfo({});
+  }
 
-    return (
-      <div>
-        <div className="flex-row">
-          <div className="flex-large">
-            <h1>{info.name}</h1>
-            <input type="button" value="Edit" onClick={this.handleEditClick} />
-            <input
-              form={nameForm}
-              type="button"
-              value="Save"
-              onClick={this.submitForm}
-            />
-          </div>
-          <div className="flex-large">
-            <h5>
-              {info.email} <br />
-              {info.phone}
-            </h5>
-            {}
-            {displayForm}
-          </div>
-        </div>
-
-        <hr />
-      </div>
+  let displayForm;
+  if (displayEdit) {
+    displayForm = (
+      <NameForm info={info} formId={nameForm} handleChange={handleChange} />
     );
   }
+
+  return (
+    <div>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h1>{info.name}</h1>
+          <input type="button" value="Edit" onClick={() => setEdit(true)} />
+          <input
+            form={nameForm}
+            type="button"
+            value="Save"
+            onClick={submitForm}
+          />
+        </div>
+        <div className="flex-large">
+          <h5>
+            {info.email} <br />
+            {info.phone}
+          </h5>
+          {}
+          {displayForm}
+        </div>
+      </div>
+
+      <hr />
+    </div>
+  );
 }
 
 class EducationForm extends Component {
