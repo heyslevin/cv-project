@@ -3,13 +3,11 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-class TextForm extends Component {
-  render() {
-    const { name, value, onChange } = this.props;
-    return (
-      <input type="text" name={name} defaultValue={value} onChange={onChange} />
-    );
-  }
+function TextForm(props) {
+  const { name, value, onChange } = props;
+  return (
+    <input type="text" name={name} defaultValue={value} onChange={onChange} />
+  );
 }
 
 function NameForm(props) {
