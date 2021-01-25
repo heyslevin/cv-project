@@ -47,7 +47,6 @@ function NameArea(props) {
     props.handleSubmit(nameInfo);
 
     setEdit(false);
-    setInfo({});
   }
 
   let displayForm;
@@ -85,85 +84,83 @@ function NameArea(props) {
   );
 }
 
-class EducationForm extends Component {
-  render() {
-    const { formId, info, handleChange } = this.props;
-    return (
-      <form id={formId}>
-        <TextForm
-          name="university"
-          onChange={handleChange}
-          value={info.university}
-        />
-        <TextForm
-          name="yearGraduated"
-          onChange={handleChange}
-          value={info.yearGraduated}
-        />
-        <TextForm name="notes" onChange={handleChange} value={info.notes} />
-      </form>
-    );
-  }
+function EducationForm(props) {
+  const { formId, info, handleChange } = props;
+
+  return (
+    <form id={formId}>
+      <TextForm
+        name="university"
+        onChange={handleChange}
+        value={info.university}
+      />
+      <TextForm
+        name="yearGraduated"
+        onChange={handleChange}
+        value={info.yearGraduated}
+      />
+      <TextForm name="notes" onChange={handleChange} value={info.notes} />
+    </form>
+  );
 }
 
-class EducationArea extends Component {
-  constructor(props) {
-    super(props);
+function EducationArea(props) {
+  const [educationInfo, setEducationInfo] = useState(props.info);
+  const [edit, setEdit] = useState(false);
 
-    let initialState = props.info;
+  function handleChange(e) {
+    const { name, value } = e.target;
 
-    this.state = {
-      info: initialState,
-      edit: false,
-    };
-
-    this.handleChange = this.props.handleChange.bind(this);
-    this.submitForm = this.props.submitForm.bind(this);
-    this.handleEditClick = this.props.handleEditClick.bind(this);
+    setEducationInfo((prevState) => ({ ...prevState, [name]: value }));
   }
-  render() {
-    const { info } = this.props;
-    const educationForm = "educationForm";
-    const displayEdit = this.state.edit;
-    let displayForm;
 
-    if (displayEdit) {
-      displayForm = (
-        <EducationForm
-          info={this.props.info}
-          formId={educationForm}
-          handleChange={this.handleChange}
-        />
-      );
-    }
+  function submitForm() {
+    props.handleSubmit(educationInfo);
 
-    return (
-      <div>
-        <div className="flex-row">
-          <div className="flex-large">
-            <h2>Education</h2>
-            <input type="button" value="Edit" onClick={this.handleEditClick} />
-            <input
-              form={educationForm}
-              type="button"
-              value="Save"
-              onClick={this.submitForm}
-            />
-          </div>
-          <div className="flex-large">
-            <h5>
-              {info.university} <br />
-              Class of {info.yearGraduated}
-            </h5>
-            <p>{info.notes}</p>
-            {displayForm}
-          </div>
-        </div>
+    setEdit(false);
+  }
 
-        <hr />
-      </div>
+  const { info } = props;
+  const educationForm = "educationForm";
+  const displayEdit = edit;
+  let displayForm;
+
+  if (displayEdit) {
+    displayForm = (
+      <EducationForm
+        info={props.info}
+        formId={educationForm}
+        handleChange={handleChange}
+      />
     );
   }
+
+  return (
+    <div>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Education</h2>
+          <input type="button" value="Edit" onClick={() => setEdit(true)} />
+          <input
+            form={educationForm}
+            type="button"
+            value="Save"
+            onClick={submitForm}
+          />
+        </div>
+        <div className="flex-large">
+          <h5>
+            {info.university} <br />
+            Class of {info.yearGraduated}
+          </h5>
+          <p>{info.notes}</p>
+          {displayForm}
+        </div>
+      </div>
+
+      <hr />
+    </div>
+  );
 }
 
 class JobsArea extends Component {
