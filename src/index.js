@@ -163,18 +163,12 @@ function EducationArea(props) {
   );
 }
 
-class JobsArea extends Component {
-  constructor(props) {
-    super(props);
-
-    this.displayDelete = this.displayDelete.bind(this);
-  }
-
-  displayDelete(index) {
+function JobsArea(props) {
+  function displayDelete(index) {
     let displayDelete;
-    if (this.props.deleteState) {
+    if (props.deleteState) {
       displayDelete = (
-        <button className="icon" onClick={() => this.props.deleteItem(index)}>
+        <button className="icon" onClick={() => props.deleteItem(index)}>
           <DeleteIcon />
         </button>
       );
@@ -183,23 +177,21 @@ class JobsArea extends Component {
     return displayDelete;
   }
 
-  render() {
-    const { jobs } = this.props;
+  const { jobs } = props;
 
-    const jobBlocks = jobs.map((job, index) => {
-      return (
-        <div key={index}>
-          <h5>
-            {job.company} {this.displayDelete(index)}
-            <br />
-            {job.yearIn}-{job.yearOut}
-          </h5>
-          <p>{job.description}</p>
-        </div>
-      );
-    });
-    return <div>{jobBlocks}</div>;
-  }
+  const jobBlocks = jobs.map((job, index) => {
+    return (
+      <div key={index}>
+        <h5>
+          {job.company} {displayDelete(index)}
+          <br />
+          {job.yearIn}-{job.yearOut}
+        </h5>
+        <p>{job.description}</p>
+      </div>
+    );
+  });
+  return <div>{jobBlocks}</div>;
 }
 
 function ExperienceArea(props) {
