@@ -323,146 +323,103 @@ function Footer() {
 // ];
 
 function CvDoc(props) {
+  const [deleteStatus, setDeleteStatus] = useState(false);
 
-  const [deleteStatus,setDeleteStatus] = useState(false);
-  const [generalInfo,setGeneralInfo] = useState({
-        name: "James Donovan",
-        email: "jamesd@gmail.com",
-        phone: "956 581 7515",
-      });
-  const [educationInfo,setEducationInfo] = useState({
-        university: "Princeton",
-        yearGraduated: "2000",
-        notes: "Graduated with Honors"
+  const [generalInfo, setGeneralInfo] = useState({
+    name: "James Donovan",
+    email: "jamesd@gmail.com",
+    phone: "956 581 7515",
   });
 
-  
+  const [educationInfo, setEducationInfo] = useState({
+    university: "Princeton",
+    yearGraduated: "2000",
+    notes: "Graduated with Honors",
+  });
 
-    this.state = {
-      deleteStatus: false,
-      generalInfo: {
-        name: "James Donovan",
-        email: "jamesd@gmail.com",
-        phone: "956 581 7515",
-      },
+  const [workInfo, setWorkInfo] = useState([
+    {
+      company: "IBM",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+      yearIn: "2005",
+      yearOut: "2010",
+    },
 
-      educationInfo: {
-        university: "Princeton",
-        yearGraduated: "2000",
-        notes: "Graduated with Honors",
-      },
+    {
+      company: "Apple",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
+      yearIn: "2010",
+      yearOut: "2015",
+    },
+  ]);
 
-      workInfo: [
-        {
-          company: "IBM",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
-          yearIn: "2005",
-          yearOut: "2010",
-        },
+  // this.handleNameSubmit = this.handleNameSubmit.bind(this);
+  // this.handleEducationSubmit = this.handleEducationSubmit.bind(this);
+  // this.handleJobsSubmit = this.handleJobsSubmit.bind(this);
+  // this.deleteItem = this.deleteItem.bind(this);
+  // this.handleDelete = this.handleDelete.bind(this);
 
-        {
-          company: "Apple",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam et nisl at tincidunt. Morbi lacus tellus, placerat vel purus sed, pharetra malesuada dolor. Aliquam erat volutpat. Maecenas cursus eleifend porta. Nulla facilisi. Praesent condimentum elementum cursus. Nulla facilisi. Fusce auctor orci sit amet urna tristique vestibulum.",
-          yearIn: "2010",
-          yearOut: "2015",
-        },
-      ],
-    };
-
-    this.handleNameSubmit = this.handleNameSubmit.bind(this);
-    this.handleEducationSubmit = this.handleEducationSubmit.bind(this);
-    this.handleJobsSubmit = this.handleJobsSubmit.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-  
-
-  handleNameSubmit(newstate) {
-    this.setState({
-      generalInfo: newstate,
-    });
+  function handleNameSubmit(newstate) {
+    setGeneralInfo(newstate);
   }
 
-  handleEducationSubmit(newstate) {
-    this.setState({
-      educationInfo: newstate,
-    });
+  function handleEducationSubmit(newstate) {
+    setEducationInfo(newstate);
   }
 
-  handleJobsSubmit(newstate) {
-    this.setState({ workInfo: [...this.state.workInfo, newstate] });
+  function handleJobsSubmit(newstate) {
+    setWorkInfo([...workInfo, newstate]);
   }
 
-  handleEditClick() {
-    this.setState({
-      edit: true,
-    });
-  }
+  // function handleChange(e) {
+  //   const { name, value } = e.target;
 
-  handleChange(e) {
-    const { name, value } = e.target;
+  //   this.setState((prevState) => ({
+  //     info: { ...prevState.info, [name]: value },
+  //   }));
+  // }
 
-    this.setState((prevState) => ({
-      info: { ...prevState.info, [name]: value },
-    }));
-  }
+  // function submitForm() {
+  //   this.props.handleSubmit(this.state.info);
 
-  submitForm() {
-    this.props.handleSubmit(this.state.info);
+  //   this.setState({
+  //     edit: false,
+  //     info: {},
+  //   });
+  // }
 
-    this.setState({
-      edit: false,
-      info: {},
-    });
-  }
-
-  deleteItem = (index) => {
-    const { workInfo } = this.state;
-    this.setState({
-      workInfo: workInfo.filter((item, i) => {
+  function deleteItem(index) {
+    setWorkInfo(
+      workInfo.filter((item, i) => {
         return i !== index;
       }),
-      deleteStatus: false,
-    });
-  };
-
-  handleDelete = () => {
-    this.setState({ deleteStatus: true });
-  };
-
-  
-    const { generalInfo, workInfo, educationInfo, deleteStatus } = this.state;
-    return (
-      <div className="small-container">
-        <NameArea
-          info={generalInfo}
-          handleEditClick={this.handleEditClick}
-          handleSubmit={this.handleNameSubmit}
-          handleChange={this.handleChange}
-          submitForm={this.submitForm}
-        />
-        <EducationArea
-          info={educationInfo}
-          handleEditClick={this.handleEditClick}
-          handleSubmit={this.handleEducationSubmit}
-          handleChange={this.handleChange}
-          submitForm={this.submitForm}
-        />{" "}
-        <ExperienceArea
-          info={workInfo}
-          deleteStatus={deleteStatus}
-          handleEditClick={this.handleEditClick}
-          handleSubmit={this.handleJobsSubmit}
-          handleChange={this.handleChange}
-          submitForm={this.submitForm}
-          deleteItem={this.deleteItem}
-          handleDelete={this.handleDelete}
-        />
-        <Footer />
-      </div>
+      setDeleteStatus(false)
     );
-  
+  }
+
+  function handleDelete() {
+    setDeleteStatus(true);
+  }
+
+  return (
+    <div className="small-container">
+      <NameArea info={generalInfo} handleSubmit={handleNameSubmit} />
+      <EducationArea
+        info={educationInfo}
+        handleSubmit={handleEducationSubmit}
+      />{" "}
+      <ExperienceArea
+        info={workInfo}
+        deleteStatus={deleteStatus}
+        handleSubmit={handleJobsSubmit}
+        deleteItem={deleteItem}
+        handleDelete={handleDelete}
+      />
+      <Footer />
+    </div>
+  );
 }
 
 ReactDOM.render(
