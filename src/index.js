@@ -202,99 +202,86 @@ class JobsArea extends Component {
   }
 }
 
-class ExperienceArea extends Component {
-  constructor(props) {
-    super(props);
+function ExperienceArea(props) {
+  let initialState = props.info;
+  let initialDeleteStatus = props.deleteStatus;
+  let displayForm;
+  let saveButton;
+  let jobForm = "jobForm";
 
-    let initialState = props.info;
-    let initialDeleteStatus = props.deleteStatus;
+  const { handleDelete, deleteItem, handleSubmit, info } = props;
 
-    this.state = {
-      info: initialState,
-      delete: initialDeleteStatus,
-    };
+  const [infoExperience, setInfoExperience] = useState(initialState);
+  const [edit, setEdit] = useState(false);
 
-    this.handleChange = this.props.handleChange.bind(this);
-    this.submitForm = this.props.submitForm.bind(this);
-    this.handleEditClick = this.props.handleEditClick.bind(this);
+  function handleChange(e) {
+    const { name, value } = e.target;
+
+    setInfoExperience((prevState) => ({ ...prevState, [name]: value }));
   }
 
-  render() {
-    const jobForm = "jobForm";
-    const displayEdit = this.state.edit;
-    let displayForm;
-    let saveButton;
+  function submitForm() {
+    props.handleSubmit(infoExperience);
 
-    if (displayEdit) {
-      displayForm = (
-        <form id={jobForm}>
-          <input
-            type="text"
-            name="company"
-            placeholder="Company"
-            onChange={this.handleChange}
-          />
-          <input
-            type="text"
-            name="yearIn"
-            placeholder="Year Started"
-            onChange={this.handleChange}
-          />
-          <input
-            type="text"
-            name="yearOut"
-            placeholder="Year Ended"
-            onChange={this.handleChange}
-          />
-          <textarea
-            name="description"
-            placeholder="Description"
-            onChange={this.handleChange}
-          />
-        </form>
-      );
-      saveButton = (
+    setEdit(false);
+  }
+
+  if (edit) {
+    displayForm = (
+      <form id={jobForm}>
         <input
-          form={jobForm}
-          type="button"
-          value="Save"
-          onClick={this.submitForm}
+          type="text"
+          name="company"
+          placeholder="Company"
+          onChange={handleChange}
         />
-      );
-    }
-
-    return (
-      <div>
-        <div className="flex-row">
-          <div className="flex-large">
-            <h2>Experience</h2>
-            <input
-              type="button"
-              value="Add Job"
-              onClick={this.handleEditClick}
-            />
-            <input
-              type="button"
-              value="Delete Job"
-              onClick={this.props.handleDelete}
-            />
-            {saveButton}
-          </div>
-          <div className="flex-large">
-            <JobsArea
-              jobs={this.props.info}
-              edit={this.state.edit}
-              deleteState={this.props.deleteStatus}
-              deleteItem={this.props.deleteItem}
-            />
-            {displayForm}
-            <hr />
-          </div>
-        </div>
-        <hr />
-      </div>
+        <input
+          type="text"
+          name="yearIn"
+          placeholder="Year Started"
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="yearOut"
+          placeholder="Year Ended"
+          onChange={handleChange}
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          onChange={handleChange}
+        />
+      </form>
+    );
+    saveButton = (
+      <input form={jobForm} type="button" value="Save" onClick={submitForm} />
     );
   }
+
+  return (
+    <div>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Experience</h2>
+          <input type="button" value="Add Job" onClick={() => setEdit(true)} />
+          <input type="button" value="Delete Job" onClick={handleDelete} />
+          {saveButton}
+        </div>
+        <div className="flex-large">
+          <JobsArea
+            jobs={info}
+            edit={edit}
+            deleteState={props.deleteStatus}
+            deleteItem={props.deleteItem}
+          />
+          {displayForm}
+          <hr />
+        </div>
+      </div>
+      <hr />
+    </div>
+  );
 }
 
 class Footer extends Component {
