@@ -276,25 +276,23 @@ function ExperienceArea(props) {
   );
 }
 
-class Footer extends Component {
-  componentDidMount() {
+function Footer() {
+  useEffect(() => {
     document.title = "My CV";
-  }
+  });
 
-  render() {
-    return (
-      <div className="footer">
-        <div className="flex-row">
-          <div className="flex-large">
-            <p>James Donovan</p>
-          </div>
-          <div className="flex-large">
-            <p>Copyright 2020©</p>
-          </div>
+  return (
+    <div className="footer">
+      <div className="flex-row">
+        <div className="flex-large">
+          <p>James Donovan</p>
+        </div>
+        <div className="flex-large">
+          <p>Copyright 2020©</p>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 // const generalInfo = {
@@ -324,9 +322,22 @@ class Footer extends Component {
 //   },
 // ];
 
-class CvDoc extends Component {
-  constructor(props) {
-    super(props);
+function CvDoc(props) {
+
+  const [deleteStatus,setDeleteStatus] = useState(false);
+  const [generalInfo,setGeneralInfo] = useState({
+        name: "James Donovan",
+        email: "jamesd@gmail.com",
+        phone: "956 581 7515",
+      });
+  const [educationInfo,setEducationInfo] = useState({
+        university: "Princeton",
+        yearGraduated: "2000",
+        notes: "Graduated with Honors"
+  });
+
+  
+
     this.state = {
       deleteStatus: false,
       generalInfo: {
@@ -365,7 +376,7 @@ class CvDoc extends Component {
     this.handleJobsSubmit = this.handleJobsSubmit.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-  }
+  
 
   handleNameSubmit(newstate) {
     this.setState({
@@ -420,7 +431,7 @@ class CvDoc extends Component {
     this.setState({ deleteStatus: true });
   };
 
-  render() {
+  
     const { generalInfo, workInfo, educationInfo, deleteStatus } = this.state;
     return (
       <div className="small-container">
@@ -451,7 +462,7 @@ class CvDoc extends Component {
         <Footer />
       </div>
     );
-  }
+  
 }
 
 ReactDOM.render(
