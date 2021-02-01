@@ -10,6 +10,7 @@
 
 # production
 /build
+/loteria
 
 # misc
 .DS_Store
